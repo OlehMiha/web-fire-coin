@@ -10,6 +10,7 @@ module.exports = function (ctx) {
       'axios',
       'api',
       'v-img',
+      'vue-script2',
       'filters'
     ],
 
@@ -63,7 +64,11 @@ module.exports = function (ctx) {
         'QTh',
         'QTr',
         'QTd',
-        'QAvatar'
+        'QAvatar',
+        'QToggle',
+        'QBtnToggle',
+        'QBadge',
+        'QTooltip'
       ],
 
       directives: [
@@ -96,18 +101,36 @@ module.exports = function (ctx) {
           options: {
             formatter: require('eslint').CLIEngine.getFormatter('stylish')
           }
-        })
+        });
+      },
+      env: {
+        API_ENDPOINT: JSON.stringify('/api/')
       }
     },
 
     devServer: {
       // https: true,
-      // port: 8080,
-      open: true // opens browser window automatically
+      // port: 3000,
+      open: true,
+      proxy: {
+        '/media': {
+          target: 'http://localhost:3000',
+          changeOrigin: true
+        },
+        '/api': {
+          target: 'http://localhost:3000',
+          changeOrigin: true
+        },
+        '/socket.io': {
+          target: 'http://localhost:3000',
+          changeOrigin: true,
+          ws: true
+        }
+      }
     },
 
-    // animations: 'all', // --- includes all animations
-    animations: [],
+    animations: 'all', // --- includes all animations
+    // animations: [],
 
     ssr: {
       pwa: false
@@ -186,5 +209,5 @@ module.exports = function (ctx) {
         // appId: 'paytion-admin'
       }
     }
-  }
-}
+  };
+};

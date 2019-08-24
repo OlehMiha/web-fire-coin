@@ -8,8 +8,8 @@ class ApiService {
   httpClient;
 
   urls = urls;
-
   constructor () {
+    console.log(process.env.API_ENDPOINT);
     this.httpClient = Axios.create({baseURL: process.env.API_ENDPOINT});
   }
 

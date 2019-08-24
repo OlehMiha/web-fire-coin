@@ -1,5 +1,6 @@
 <template>
   <q-layout view="hHh LpR lFf">
+    <WS />
     <q-header reveal elevated>
       <q-toolbar color="primary" >
 
@@ -32,6 +33,7 @@
 <script>
 import {createNamespacedHelpers} from 'vuex';
 import LeftSidebar from 'src/components/LeftSidebar';
+import WS from 'src/api/ws/WS';
 
 const {
   mapActions: mapAuthActions
@@ -40,6 +42,7 @@ const {
 export default {
   name: 'layout',
   components: {
+    WS,
     LeftSidebar
   },
   methods: {

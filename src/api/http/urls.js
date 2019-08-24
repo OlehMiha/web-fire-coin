@@ -7,9 +7,9 @@ export const urls = {
       method: Method.POST
     }
   },
-  background: {
+  cur: {
     list: {
-      url: '/background/'
+      url: '/curseAll/'
     },
     one: {
       load: {

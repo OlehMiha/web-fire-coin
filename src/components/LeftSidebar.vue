@@ -15,7 +15,7 @@
           <q-icon name="wc" />
         </q-item-section>
         <q-item-section>
-          <q-item-label>Users</q-item-label>
+          <q-item-label>Home</q-item-label>
         </q-item-section>
       </q-item>
 
@@ -73,14 +73,13 @@ export default {
   name: 'left-sidebar',
   data () {
     return {
-      link: 'users'
+      link: 'home'
     };
   },
   methods: {
     goUrlMenu (url) {
       this.link = url;
       this.$router.push('/' + url);
-      console.log(url);
     }
   }
 };

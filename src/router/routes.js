@@ -32,7 +32,7 @@ const routes = [
       },
       {
         path: '',
-        redirect: () => store.getters['auth/isAuthenticated'] ? 'users' : 'login'
+        redirect: () => store.getters['auth/isAuthenticated'] ? 'home' : 'login'
       }
     ]
   }

@@ -88,7 +88,7 @@ export default {
 <style lang="stylus">
 .left-bar
   height calc(100vh - 50px)
-  min-width 180px;
+  min-width 180px
   float left
   text-align left
   border none

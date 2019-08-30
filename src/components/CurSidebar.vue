@@ -26,14 +26,14 @@
               text-color="black"
               :options="[
                 {label: 'All', value: 'all', slot: 'all'},
-                {label: 'Fav',value: 'fav', slot: 'fav'},
+                {label: 'Favorites',value: 'fav', slot: 'fav'},
               ]"
             >
               <template v-slot:all>
                 <q-tooltip>All currency</q-tooltip>
               </template>
               <template v-slot:fav>
-                <q-tooltip>Favorites</q-tooltip>
+                <q-tooltip>Favorites currency</q-tooltip>
               </template>
             </q-btn-toggle>
           </template>

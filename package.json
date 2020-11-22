@@ -2,7 +2,7 @@
   "name": "paytion-admin",
   "version": "0.0.1",
   "description": "admin panal",
-  "productName": "Quasar App",
+  "productName": "Fire Coin",
   "cordovaId": "org.cordova.quasar.app",
   "author": "Oleg Miga <fire913n@gmail.com>",
   "private": true,
@@ -14,7 +14,7 @@
   "dependencies": {
     "@quasar/extras": "^1.0.0",
     "axios": "^0.18.1",
-    "quasar": "^1.0.0",
+    "quasar": "^1.14.5",
     "v-img": "^0.2.0",
     "vue-i18n": "^8.0.0",
     "vue-script2": "^2.1.0",

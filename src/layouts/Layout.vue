@@ -1,9 +1,13 @@
 <template>
   <q-layout view="hHh LpR lFf">
-    <WS />
     <q-header reveal elevated>
       <q-toolbar color="primary" >
-
+        <q-btn
+          flat
+          round
+          dense
+          :icon="openMenu ? 'arrow_back' : 'menu'"
+          @click="openMenu = !openMenu"/>
         <q-toolbar-title>
           WebFireCoin
           <div slot="subtitle">v0.0.1</div>
@@ -24,7 +28,7 @@
     </q-header>
 
     <q-page-container>
-      <LeftSidebar />
+      <LeftSidebar :openMenu="openMenu"/>
       <router-view />
     </q-page-container>
   </q-layout>
@@ -33,22 +37,31 @@
 <script>
 import {createNamespacedHelpers} from 'vuex';
 import LeftSidebar from 'src/components/LeftSidebar';
-import WS from 'src/api/ws/WS';
+import ws from 'src/api/ws';
 
-const {
-  mapActions: mapAuthActions
-} = createNamespacedHelpers('auth');
+const {mapActions: mapAuthActions} = createNamespacedHelpers('auth');
+const {mapActions: mapKeysActions} = createNamespacedHelpers('keys');
 
 export default {
   name: 'layout',
   components: {
-    WS,
     LeftSidebar
+  },
+  data () {
+    return {
+      openMenu: false
+    };
+  },
+  async created () {
+    await this.setKeys();
+    await ws.start();
   },
   methods: {
     ...mapAuthActions(['logout']),
+    ...mapKeysActions(['setKeys']),
     logoutApp () {
       this.logout();
+      ws.close();
       this.$router.push('/login');
     }
   }

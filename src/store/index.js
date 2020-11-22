@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import {getAccessToken, getRefreshToken} from '../api/jwt/storage';
 
 import auth from './auth';
 import cur from './cur';
+import keys from './keys';
 
 Vue.use(Vuex);
 
@@ -11,11 +11,8 @@ const store = new Vuex.Store({
   strict: process.env.NODE_ENV !== 'production',
   modules: {
     auth,
-    cur
+    cur,
+    keys
   }
 });
-
-if (getAccessToken && getRefreshToken) {
-  // verifyTokens();
-}
 export default store;

@@ -18,6 +18,17 @@ const routes = [
     ]
   },
   {
+    path: '/register',
+    component: () => import('layouts/Blank.vue'),
+    beforeEnter: IsGuest,
+    children: [
+      {
+        path: '',
+        component: () => import('pages/Register.vue')
+      }
+    ]
+  },
+  {
     path: '/',
     component: () => import('layouts/Layout.vue'),
     beforeEnter: IsAuthenticated,
@@ -25,6 +36,10 @@ const routes = [
       {
         path: 'home',
         component: () => import('pages/Index.vue')
+      },
+      {
+        path: 'users',
+        component: () => import('pages/Users.vue')
       },
       {
         path: 'settings',

@@ -14,16 +14,18 @@
           class="my-sticky-header-table"
           hide-bottom
           dense
+          dark
         >
           <template v-slot:top-left v-if="selected.length > 0">
             <q-btn-toggle
               v-model="favorites"
               spread
-              no-caps
+              glossy
               unelevated
+              no-caps
               toggle-color="accent"
-              color="secondary"
-              text-color="black"
+              color="primary"
+              text-color="white"
               :options="[
                 {label: 'All', value: 'all', slot: 'all'},
                 {label: 'Favorites',value: 'fav', slot: 'fav'},
@@ -38,14 +40,14 @@
             </q-btn-toggle>
           </template>
           <template v-slot:top-right>
-            <q-input borderless dense debounce="300" v-model="filter" placeholder="Search">
+            <q-input dark borderless dense debounce="300" v-model="filter" placeholder="Search">
               <template v-slot:append>
                 <q-icon name="search" />
               </template>
             </q-input>
           </template>
           <template v-slot:body="props">
-            <q-tr :props="props" v-if="favorites === 'all' || selected.length === 0 || (favorites === 'fav' && props.selected)">
+            <q-tr :props="props" v-show="favorites === 'all' || selected.length === 0 || (favorites === 'fav' && props.selected)">
               <q-td auto-width>
                 <q-toggle
                   dense
@@ -67,21 +69,21 @@
                 </q-badge>
               </q-td>
               <q-td key="det" :props="props">
-                <q-btn size="sm" dense round flat color="secondary" :icon="props.expand ? 'arrow_drop_up' : 'arrow_drop_down'" @click="props.expand = !props.expand" />
+                <q-btn size="sm" dense round flat color="grey" :icon="props.expand ? 'arrow_drop_up' : 'arrow_drop_down'" @click="props.expand = !props.expand" />
               </q-td>
             </q-tr>
-            <q-tr v-show="props.expand" :props="props" class="bg-blue-grey-10">
+            <q-tr v-if="favorites === 'all' || selected.length === 0 || (favorites === 'fav' && props.selected)" v-show="props.expand" :props="props" class="bg-secondary">
               <q-td colspan="100%">
                 <div class="text-left row items-center justify-between">
-                  <div class="col flex items-center justify-center">
+                  <div class="col flex column items-center justify-center">
                     <q-badge square color="green">high:</q-badge>
                     <span class="q-ml-xs text-green">{{props.row.high.toFixed(5)}}</span>
                   </div>
-                  <div class="col flex items-center justify-center">
+                  <div class="col flex column items-center justify-center">
                     <q-badge square color="red">low:</q-badge>
                     <span class="q-ml-xs text-red">{{props.row.low.toFixed(5)}}</span>
                   </div>
-                  <div class="col flex items-center justify-center">
+                  <div class="col flex column items-center justify-center">
                     <q-badge square :color="props.row.dailyChangePerc < 0 ? 'red' : 'green'">
                       24h:
                     </q-badge>
@@ -114,15 +116,15 @@
 
   .my-sticky-header-table
     border 1px solid $liteSecondary
-    border-radius 5px
+    border-radius 3px
 
     .q-table__middle
-        max-height calc(100vh - 152px) !important
+        max-height calc(100vh - 140px) !important
 
     .q-table__top,
     .q-table__bottom,
     thead tr:first-child th /* bg color is important for th; just specify one */
-      background-color $secondary
+      background-color $backgroundGrey
       color $blackText
 
     thead tr:first-child th
@@ -168,6 +170,7 @@ export default {
           label: 'Rates',
           field: 'lastPrice',
           align: 'left',
+          sortable: true,
           required: true
         },
         {
@@ -175,6 +178,7 @@ export default {
           label: 'Day, %',
           field: 'dailyChangePerc',
           align: 'left',
+          sortable: true,
           required: true
         },
         {

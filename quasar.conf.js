@@ -11,7 +11,8 @@ module.exports = function (ctx) {
       'api',
       'v-img',
       'vue-script2',
-      'filters'
+      'filters',
+      'vuelidate'
     ],
 
     css: [
@@ -31,45 +32,11 @@ module.exports = function (ctx) {
     ],
 
     framework: {
-      // iconSet: 'ionicons-v4',
+      iconSet: 'material-icons', // Quasar icon set
       // lang: 'de', // Quasar language
 
-      // all: true, // --- includes everything; for dev only!
-
-      components: [
-        'QLayout',
-        'QHeader',
-        'QDrawer',
-        'QPageContainer',
-        'QPage',
-        'QToolbar',
-        'QToolbarTitle',
-        'QBtn',
-        'QIcon',
-        'QList',
-        'QItem',
-        'QItemSection',
-        'QItemLabel',
-        'QItem',
-        'QItemSection',
-        'QItemLabel',
-        'QCard',
-        'QCardSection',
-        'QCardActions',
-        'QSeparator',
-        'QField',
-        'QInput',
-        'QScrollArea',
-        'QTable',
-        'QTh',
-        'QTr',
-        'QTd',
-        'QAvatar',
-        'QToggle',
-        'QBtnToggle',
-        'QBadge',
-        'QTooltip'
-      ],
+      all: true, // --- includes everything; for dev only!
+      importStrategy: 'auto',
 
       directives: [
         'Ripple'
@@ -114,15 +81,15 @@ module.exports = function (ctx) {
       open: true,
       proxy: {
         '/media': {
-          target: 'http://localhost:3000',
+          target: 'http://localhost:5000',
           changeOrigin: true
         },
         '/api': {
-          target: 'http://localhost:3000',
+          target: 'http://localhost:5000',
           changeOrigin: true
         },
         '/socket.io': {
-          target: 'http://localhost:3000',
+          target: 'http://localhost:8081',
           changeOrigin: true,
           ws: true
         }

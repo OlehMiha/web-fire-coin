@@ -2,10 +2,26 @@
   <q-page class="row items-center justify-center">
     <q-card dark class="bg-grey-9 q-pa-md" style="width: 350px">
       <div class="text-center text-h6 row items-center justify-center">
-        SING IN<q-icon slot="right" name="lock" />
+        REGISTER<q-icon slot="right" name="lock" />
       </div>
       <q-card-section>
         <div class="q-gutter-y-xs column">
+          <q-input
+            v-model.trim="form.username"
+            type="text"
+            :error="$v.form.username.$error"
+            @blur="$v.form.username.$touch"
+            label="Name"
+            dark
+            round
+            outlined
+            borderless
+          >
+            <template v-slot:error>
+              <div class="text-right">Required name.</div>
+            </template>
+          </q-input>
+
           <q-input
             v-model.trim="form.email"
             type="email"
@@ -53,8 +69,8 @@
       </q-card-section>
       <q-separator dark inset />
       <q-card-actions class="row justify-between q-px-md q-pb-none">
-        <q-btn :loading="loading" color="primary" lable="Sing Up" to="/register" flat>Register</q-btn>
-        <q-btn :loading="loading" color="primary" lable="Login" @click="signIn">Login</q-btn>
+        <q-btn :loading="loading" color="primary" lable="Login" to="/login" flat>Login</q-btn>
+        <q-btn :loading="loading" color="primary" lable="Sing Up" @click="signUp">Register</q-btn>
       </q-card-actions>
     </q-card>
   </q-page>
@@ -74,22 +90,24 @@ export default {
       isPwd: true,
       form: {
         email: '',
-        password: ''
+        password: '',
+        username: ''
       }
     };
   },
   validations: {
     form: {
       email: {email, required},
-      password: {required, minLength: minLength(6)}
+      password: {required, minLength: minLength(6)},
+      username: {required}
     }
   },
   methods: {
-    ...mapActions(['login']),
-    async signIn () {
+    ...mapActions(['register']),
+    async signUp () {
       this.loading = true;
       try {
-        await this.login(this.form);
+        await this.register(this.form);
         this.$router.push('/home');
       } finally {
         this.loading = false;
@@ -99,6 +117,6 @@ export default {
 };
 </script>
 
-<style lang="stylus" scoped>
+<style lang="stylus">
 
 </style>

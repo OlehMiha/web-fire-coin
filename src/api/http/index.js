@@ -66,10 +66,10 @@ class ApiService {
   static handleError (error) {
     let data = error && error.response && error.response.data && error.response.data.errors;
     data = (data && data.errors) || data;
-    if (data && data.ERROR_MESSAGE) {
-      Notify.create(data.ERROR_MESSAGE);
+    if (data && data.msg) {
+      Notify.create(data.msg);
     } else if (data && data.length) {
-      data.forEach(err => Notify.create(err.ERROR_MESSAGE || err));
+      data.forEach(err => Notify.create(err.msg || err));
     } else {
       Notify.create(error.message || error);
     }

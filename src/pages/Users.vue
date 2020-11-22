@@ -1,16 +1,42 @@
 <template>
   <q-page class="flex justify-center q-pa-md">
-    <template v-if="dataTableUsers">
+    <template>
       <div class="scroll-data-background">
         <q-table
-          :data="dataTableUsers"
+          :loading="loading"
+          :data="keys"
           :columns="columns"
           :pagination= "pagination"
+          :filter="filter"
           row-key="index"
           class="my-sticky-header-table"
           hide-bottom
           flat
         >
+          <template v-slot:top>
+            <q-input v-model="name" class="q-mr-lg" label="Name">
+              <template v-slot:prepend>
+                <q-icon name="person_add" />
+              </template>
+            </q-input>
+            <q-input v-model="key" class="q-mr-lg" label="Key">
+              <template v-slot:prepend>
+                <q-icon name="vpn_key" />
+              </template>
+            </q-input>
+            <q-input v-model="secretKey" class="q-mr-lg" label="Secret Key">
+              <template v-slot:prepend>
+                <q-icon name="lock" />
+              </template>
+            </q-input>
+            <q-btn color="primary" :disable="loading" label="Add key" @click="addKeyInTable" />
+            <q-space />
+            <q-input borderless dense debounce="300" color="primary" v-model="filter">
+              <template v-slot:append>
+                <q-icon name="search" />
+              </template>
+            </q-input>
+          </template>
 
           <q-tr slot="header" slot-scope="props">
             <q-th v-for="col in props.cols" :key="col.name" :props="props">
@@ -18,40 +44,9 @@
             </q-th>
           </q-tr>
           <tr v-if="!props.row.pattern" slot="body" slot-scope="props" :props="props" class="row-table">
-
-            <td key="avatar" :props="props" width="40px">
-              <div class="row items-center justify-between no-wrap">
-                <template v-if="props.row.avatar">
-                  <img v-img:group-1 :src="props.row.avatar" :alt="props.row.name" width="40px">
-
-                  <input
-                    :ref="'inputFile'+props.row.id"
-                    type="file"
-                    class="file"
-                    hidden
-                    accept=".png, .jpg, .jpeg, .gif"
-                    @change="updateFile($refs['inputFile'+props.row.id].files[0], props.row)"
-                  >
-                </template>
-                <template v-else>
-                  <q-avatar color="primary" text-color="white" style="font-size: 40px;">
-                    {{props.row.firstname[0].toUpperCase() + props.row.lastname[0].toUpperCase()}}
-                  </q-avatar>
-                </template>
-                <q-btn
-                  round
-                  color="secondary"
-                  size="xs"
-                  icon="cloud_download"
-                  class="q-ml-sm"
-                  @click="$refs['inputFile'+props.row.id].click()"
-                />
-              </div>
-            </td>
-
-            <td key="firstname" :props="props" >{{`${props.row.firstname} ${props.row.lastname}`}}</td>
-            <td key="email" :props="props" >{{props.row.email}}</td>
-            <td key="phone" :props="props" >{{props.row.phone}}</td>
+            <td key="name" :props="props" >{{props.row.name}}</td>
+            <td key="key" :props="props" >{{props.row.key}}</td>
+            <td key="secretKey" :props="props" >{{props.row.secretKey.slice(0,7) + "..."}}</td>
 
             <td key="active" :props="props" class="text-center" width="60px">
               <q-btn color="negative" @click="deleteRow(props.row)" ><q-icon name="delete_forever"/></q-btn>
@@ -60,11 +55,6 @@
           </tr>
         </q-table>
       </div>
-    </template>
-    <template v-else>
-      <p>
-        Loading...
-      </p>
     </template>
   </q-page>
 </template>
@@ -96,67 +86,77 @@
 
 <script>
 import {createNamespacedHelpers} from 'vuex';
-const {mapActions, mapGetters} = createNamespacedHelpers('users');
+const {mapActions, mapState} = createNamespacedHelpers('keys');
 
 export default {
-  name: 'page-index',
+  name: 'page-user',
   data () {
     return {
+      loading: false,
+      filter: '',
+      name: '',
+      key: '',
+      secretKey: '',
       columns: [
-        {name: 'avatar', label: 'Avatar', field: 'avatar', align: 'left'},
         {
-          name: 'firstname',
-          label: 'User Name',
-          field: 'firstname',
+          name: 'name',
+          label: 'Name',
+          field: 'name',
           align: 'left',
           required: true
         },
         {
-          name: 'email',
-          label: 'Email',
-          field: 'email',
+          name: 'key',
+          label: 'Key',
+          field: 'key',
           align: 'left',
           required: true
         },
         {
-          name: 'phone',
-          label: 'Phone',
-          field: 'phone',
+          name: 'secretKey',
+          label: 'Secret Key',
+          field: 'secretKey',
           align: 'left',
           required: true
         },
         {
           name: 'active',
-          required: true,
           label: 'Active',
-          align: 'center',
-          field: 'active'
+          field: 'active',
+          align: 'right'
         }
       ],
       pagination: {
         rowsPerPage: 0,
-        sortBy: 'firstname'
+        sortBy: 'name'
       }
     };
   },
-  computed: mapGetters(['dataTableUsers']),
+  computed: mapState(['keys']),
   async created () {
-    await this.setDataTableUsers();
+    this.loading = true;
+    await this.setKeys();
+    this.loading = false;
   },
   methods: {
-    ...mapActions(['setDataTableUsers', 'deleteUser']),
-    updateFile (file, obj) {
-      const formData = new FormData();
-      formData.append('image', file);
-      // this.updateBackground({
-      //   data: formData,
-      //   id: obj.id
-      // });
+    ...mapActions(['setKeys', 'deleteKeys', 'addKey']),
+    async addKeyInTable () {
+      if (this.name && this.key && this.secretKey) {
+        this.loading = true;
+        try {
+          await this.addKey({name: this.name, keyUser: this.key, secretKey: this.secretKey});
+          this.name = '';
+          this.key = '';
+          this.secretKey = '';
+        } catch (e) {} finally {
+          this.loading = false;
+        }
+      }
     },
     deleteRow (props) {
       this.$q.dialog({
-        title: 'Delete user',
-        message: `Delete user - ${props.firstname} ${props.lastname} ?`,
+        title: 'Delete key',
+        message: `Delete key - ${props.name} ${props.key} ?`,
         cancel: true,
         persistent: true,
         color: 'negative',
@@ -164,8 +164,10 @@ export default {
           push: true,
           label: 'Delete!'
         }
-      }).onOk(() => {
-        this.deleteUser({id: props.id});
+      }).onOk(async () => {
+        this.loading = true;
+        await this.deleteKeys({id: props._id});
+        this.loading = false;
       });
     }
   }

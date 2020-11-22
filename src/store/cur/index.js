@@ -1,17 +1,21 @@
 import api from '../../api/http';
 
 const SET_ALL_CUR = 'SET_ALL_CUR';
+const SET_ALL_CUR_SYMBOL = 'SET_ALL_CUR_SYMBOL';
 
 export default {
   namespaced: true,
   state: {
-    allCur: []
+    allCur: [],
+    allCurSymbol: []
   },
   getters: {
-    allCur: state => state.allCur
+    allCur: state => state.allCur,
+    allCurSymbol: state => state.allCurSymbol
   },
   mutations: {
-    [SET_ALL_CUR]: (state, allCur) => state.allCur = allCur
+    [SET_ALL_CUR]: (state, allCur) => state.allCur = allCur,
+    [SET_ALL_CUR_SYMBOL]: (state, allCurSymbol) => state.allCurSymbol = allCurSymbol
   },
   actions: {
     async setAllCur ({commit}) {
@@ -24,6 +28,9 @@ export default {
     },
     updateAllCur ({commit}, data) {
       commit(SET_ALL_CUR, data);
+    },
+    updateAllCurSymbol ({commit}, data) {
+      commit(SET_ALL_CUR_SYMBOL, data);
     }
   }
 };

@@ -3,33 +3,28 @@ import {Method} from './constants';
 export const urls = {
   auth: {
     login: {
-      url: '/user/login/',
+      url: '/auth/login',
+      method: Method.POST
+    },
+    register: {
+      url: '/auth/register',
       method: Method.POST
     }
   },
-  cur: {
+  keys: {
     list: {
-      url: '/curseAll/'
+      url: '/keys'
     },
     one: {
       load: {
-        url: '/background/:id/'
+        url: '/keys/:id'
       },
       create: {
-        url: '/background/',
+        url: '/keys',
         method: Method.POST
-        // contentType: 'multipart/form-data'
-      },
-      update: {
-        url: '/background/:id/',
-        method: Method.PUT
-      },
-      updatePatch: {
-        url: '/background/:id/',
-        method: Method.PATCH
       },
       remove: {
-        url: '/background/:id/',
+        url: '/keys/:id',
         method: Method.DELETE
       }
     }

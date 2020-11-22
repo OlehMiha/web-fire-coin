@@ -1,8 +1,8 @@
 <template>
-  <q-page class="row no-wrap q-pa-md">
+  <div class="page-full-h row no-wrap q-pa-md ">
     <Graphs :curClick="curClick"/>
     <CurSidebar :curClick="curClick" :setCurClick="setCurClick"/>
-  </q-page>
+  </div>
 </template>
 
 <style>

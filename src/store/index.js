@@ -3,7 +3,7 @@ import Vuex from 'vuex';
 
 import auth from './auth';
 import cur from './cur';
-import keys from './keys';
+import users from './users';
 
 Vue.use(Vuex);
 
@@ -12,7 +12,7 @@ const store = new Vuex.Store({
   modules: {
     auth,
     cur,
-    keys
+    users
   }
 });
 export default store;

@@ -86,7 +86,7 @@
 
 <script>
 import {createNamespacedHelpers} from 'vuex';
-const {mapActions, mapState} = createNamespacedHelpers('keys');
+const {mapActions, mapState} = createNamespacedHelpers('users');
 
 export default {
   name: 'page-user',

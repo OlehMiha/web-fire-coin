@@ -28,5 +28,11 @@ export const urls = {
         method: Method.DELETE
       }
     }
+  },
+  bitfinex: {
+    wallets: {
+      url: '/auth/r/wallets',
+      method: Method.POST
+    }
   }
 };

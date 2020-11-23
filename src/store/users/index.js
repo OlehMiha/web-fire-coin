@@ -4,17 +4,32 @@ const SET_KEYS = 'SET_KEYS';
 const ADD_KEY = 'ADD_KEY';
 const DELETE_KEY = 'DELETE_KEY';
 
+const SET_WALLETS = 'SET_WALLETS';
+
 export default {
   namespaced: true,
   state: {
-    keys: []
+    keys: [],
+    wallets: null
+  },
+  getters: {
+    getKeys: state => state.keys
   },
   mutations: {
     [SET_KEYS]: (state, keys) => state.keys = keys,
     [ADD_KEY]: (state, key) => state.keys.push(key),
-    [DELETE_KEY]: (state, id) => state.keys = state.keys.filter(item => item['_id'] !== id)
+    [DELETE_KEY]: (state, id) => state.keys = state.keys.filter(item => item['_id'] !== id),
+    [SET_WALLETS]: (state, wallets) => state.wallets = wallets
   },
   actions: {
+    async setWallets ({commit}, name) {
+      try {
+        const wallets = await api.request(api.urls.bitfinex.wallets, null, null, name);
+        if (wallets) {
+          await commit(SET_WALLETS, wallets);
+        }
+      } catch (e) { throw e; }
+    },
     async setKeys ({commit}) {
       try {
         const keys = await api.request(api.urls.keys.list);

@@ -40,7 +40,7 @@ import LeftSidebar from 'src/components/LeftSidebar';
 import ws from 'src/api/ws';
 
 const {mapActions: mapAuthActions} = createNamespacedHelpers('auth');
-const {mapActions: mapKeysActions} = createNamespacedHelpers('keys');
+const {mapActions: mapKeysActions} = createNamespacedHelpers('users');
 
 export default {
   name: 'layout',
@@ -54,11 +54,12 @@ export default {
   },
   async created () {
     await this.setKeys();
+    await this.setWallets('Oleh');
     await ws.start();
   },
   methods: {
     ...mapAuthActions(['logout']),
-    ...mapKeysActions(['setKeys']),
+    ...mapKeysActions(['setKeys', 'setWallets']),
     logoutApp () {
       this.logout();
       ws.close();

@@ -3,17 +3,20 @@ import {Notify} from 'quasar';
 import store from '../../store';
 import {ContentType, Method} from './constants';
 import {urls} from './urls';
+import CryptoJS from 'crypto-js';
 
 class ApiService {
   httpClient;
+  httpClientBitfinex;
 
   urls = urls;
   constructor () {
     console.log(process.env.API_ENDPOINT);
     this.httpClient = Axios.create({baseURL: process.env.API_ENDPOINT});
+    this.httpClientBitfinex = Axios.create({baseURL: '/v2/'});
   }
 
-  request (api, data, params) {
+  request (api, data, params, bitfinexName) {
     params = params || {};
     const authToken = store.getters['auth/accessToken'];
 
@@ -31,27 +34,64 @@ class ApiService {
     }
 
     let request;
-    const headers = {
-      'Content-Type': contentType || ContentType.JSON
-    };
+    let headers = {'Content-Type': contentType || ContentType.JSON};
+    if (bitfinexName) {
+      const keyUser = store.getters['users/getKeys'].find(i => i.name === bitfinexName);
+      const apiKey = keyUser.key;
+      const apiSecret = keyUser.secretKey;
+      const nonce = (Date.now() * 1000).toString(); // Standard nonce generator. Timestamp * 1000
+      const signature = `/api/v2${url}${nonce}${data ? JSON.stringify(data) : ''}`;
+      // Consists of the complete url, nonce, and request body
+      const sig = CryptoJS.HmacSHA384(signature, apiSecret).toString();
+      // The authentication signature is hashed using the private key
+      headers = {
+        'Content-Type': contentType || ContentType.JSON,
+        'bfx-nonce': nonce,
+        'bfx-apikey': apiKey,
+        'bfx-signature': sig
+      };
+    }
 
-    if (authToken) {
+    if (authToken && !bitfinexName) {
       headers.Authorization = `Bearer ${authToken}`;
     }
 
     if (contentType === ContentType.FormData) {
-      const formData = data instanceof FormData ? data : new FormData(data);
-      request = this.httpClient[method](url, formData, {
-        headers
-      });
+      let formData = new FormData();
+      if (data instanceof FormData) {
+        formData = data;
+      } else {
+        for (const key in data) {
+          formData.append(key, data[key]);
+        }
+      }
+      if (bitfinexName) {
+        request = this.httpClientBitfinex[method](url, formData, {
+          headers
+        });
+      } else {
+        request = this.httpClient[method](url, formData, {
+          headers
+        });
+      }
     } else {
-      request = this.httpClient.request({
-        url,
-        method,
-        params,
-        data,
-        headers
-      });
+      if (bitfinexName) {
+        request = this.httpClientBitfinex.request({
+          url,
+          method,
+          params,
+          data,
+          headers
+        });
+      } else {
+        request = this.httpClient.request({
+          url,
+          method,
+          params,
+          data,
+          headers
+        });
+      }
     }
 
     return request.then(res => ApiService.handleResponse(res, paginated), ApiService.handleError);

@@ -92,6 +92,10 @@ module.exports = function (ctx) {
           target: 'http://localhost:8081',
           changeOrigin: true,
           ws: true
+        },
+        '/v2': {
+          target: 'https://api.bitfinex.com',
+          changeOrigin: true
         }
       }
     },

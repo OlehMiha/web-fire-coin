@@ -38,12 +38,14 @@ export default {
           if (state.users[name] && !state.users[name].wallets) {
             state.users[name].wallets = [];
           }
-          state.users[name].wallets.push({
-            symbol: wallet[1],
-            amount: wallet[2],
-            block: wallet[4],
-            text: wallet[5]
-          });
+          if (Number(wallet[2]) >= 0.000001) {
+            state.users[name].wallets.push({
+              symbol: wallet[1],
+              amount: wallet[2],
+              block: wallet[4],
+              text: wallet[5]
+            });
+          }
         }
         console.log(state.users);
       });

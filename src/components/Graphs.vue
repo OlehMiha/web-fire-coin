@@ -1,7 +1,7 @@
 <template>
   <div class="all-graphs">
     <div class="row wrap items-stretch" :class="`graph-${numberCharts}`" style="height: calc(100vh - 64px)">
-      <div class="graph col q-pr-md q-pb-md">
+      <div class="graph col q-pr-xs q-pb-xs">
         <div class="header_graph q-py-xs q-px-md">
           <div class="row justify-between items-center">
             <span class="col">{{curClick}}</span>
@@ -48,7 +48,7 @@
         </div>
       </div>
 
-      <div v-show="numberCharts === '2'|| numberCharts === '4'" class="graph col q-pr-md q-pb-md">
+      <div v-show="numberCharts === '2'|| numberCharts === '4'" class="graph col q-pr-xs q-pb-xs">
         <div class="header_graph q-py-xs q-px-md">
           <div class="row justify-end items-center">
             <div v-if="this.allCurSymbol" style="max-width: 320px">
@@ -79,7 +79,7 @@
         </div>
       </div>
 
-      <div v-show="numberCharts === '4'" class="graph col q-pr-md q-pb-md">
+      <div v-show="numberCharts === '4'" class="graph col q-pr-xs q-pb-xs">
         <div class="header_graph q-py-xs q-px-md">
           <div class="row justify-end items-center">
             <div v-if="this.allCurSymbol" style="max-width: 320px">
@@ -110,7 +110,7 @@
         </div>
       </div>
 
-      <div v-show="numberCharts === '4'" class="graph col q-pr-md q-pb-md">
+      <div v-show="numberCharts === '4'" class="graph col q-pr-xs q-pb-xs">
         <div class="header_graph q-py-xs q-px-md">
           <div class="row justify-end items-center">
             <div v-if="this.allCurSymbol" style="max-width: 320px">

@@ -6,29 +6,93 @@ const DELETE_KEY = 'DELETE_KEY';
 
 const SET_WALLETS = 'SET_WALLETS';
 
+const SET_ORDERS = 'SET_ORDERS';
+
 export default {
   namespaced: true,
   state: {
     keys: [],
-    wallets: null
+    users: {},
+    wallets: null,
+    orders: null
   },
   getters: {
     getKeys: state => state.keys
   },
   mutations: {
-    [SET_KEYS]: (state, keys) => state.keys = keys,
-    [ADD_KEY]: (state, key) => state.keys.push(key),
+    [SET_KEYS]: (state, keys) => {
+      keys.forEach(key => {
+        state.users[key.name] = key;
+      });
+      state.keys = keys;
+    },
+    [ADD_KEY]: (state, key) => {
+      state.users[key.name] = key;
+      state.keys.push(key);
+    },
     [DELETE_KEY]: (state, id) => state.keys = state.keys.filter(item => item['_id'] !== id),
-    [SET_WALLETS]: (state, wallets) => state.wallets = wallets
+    [SET_WALLETS]: (state, {name, wallets}) => {
+      wallets.orders = wallets;
+      wallets.forEach(wallet => {
+        if (wallet[0] === 'exchange') {
+          if (state.users[name] && !state.users[name].wallets) {
+            state.users[name].wallets = [];
+          }
+          state.users[name].wallets.push({
+            symbol: wallet[1],
+            amount: wallet[2],
+            block: wallet[4],
+            text: wallet[5]
+          });
+        }
+        console.log(state.users);
+      });
+    },
+    [SET_ORDERS]: (state, {name, orders}) => {
+      state.orders = orders;
+      orders.forEach(order => {
+        if (state.users[name] && !state.users[name].orders) {
+          state.users[name].orders = [];
+        }
+        state.users[name].orders.push({
+          symbol: order[3].slice(1),
+          amount: order[6],
+          type: order[8],
+          status: order[13],
+          price: order[16]
+        });
+      });
+      console.log(state.users);
+    }
   },
   actions: {
-    async setWallets ({commit}, name) {
-      try {
-        const wallets = await api.request(api.urls.bitfinex.wallets, null, null, name);
-        if (wallets) {
-          await commit(SET_WALLETS, wallets);
-        }
-      } catch (e) { throw e; }
+    async setOrders ({commit, state, dispatch}, name) {
+      if (name) {
+        try {
+          const orders = await api.request(api.urls.bitfinex.orders, null, null, name);
+          if (orders) {
+            await commit(SET_ORDERS, {name, orders});
+          }
+        } catch (e) { throw e; }
+      } else {
+        state.keys.forEach(key => {
+          dispatch('setOrders', key.name);
+        });
+      }
+    },
+    async setWallets ({commit, state, dispatch}, name) {
+      if (name) {
+        try {
+          const wallets = await api.request(api.urls.bitfinex.wallets, null, null, name);
+          if (wallets) {
+            await commit(SET_WALLETS, {name, wallets});
+          }
+        } catch (e) { throw e; }
+      } else {
+        state.keys.forEach(key => {
+          dispatch('setWallets', key.name);
+        });
+      }
     },
     async setKeys ({commit}) {
       try {

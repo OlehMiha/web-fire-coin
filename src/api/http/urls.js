@@ -33,6 +33,10 @@ export const urls = {
     wallets: {
       url: '/auth/r/wallets',
       method: Method.POST
+    },
+    orders: {
+      url: '/auth/r/orders',
+      method: Method.POST
     }
   }
 };

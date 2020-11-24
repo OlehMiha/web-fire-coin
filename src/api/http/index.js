@@ -93,8 +93,10 @@ class ApiService {
         });
       }
     }
+    const resolve = res => ApiService.handleResponse(res, paginated);
+    const reject = ApiService.handleError;
 
-    return request.then(res => ApiService.handleResponse(res, paginated), ApiService.handleError);
+    return request.then(resolve, reject);
   }
 
   static handleResponse ({data, count}, paginated) {
@@ -104,15 +106,31 @@ class ApiService {
   }
 
   static handleError (error) {
-    let data = error && error.response && error.response.data && error.response.data.errors;
+    let data = error && error.response && error.response.data && error.response.data.errors || error && error.response;
+
     data = (data && data.errors) || data;
-    if (data && data.msg) {
-      Notify.create(data.msg);
+
+    const isUnauthorized = error.response.status === 401;
+
+    if (error && error.response && error.response.status && isUnauthorized) {
+      store.dispatch('auth/logout');
+    } else if (data && data.message) {
+      Notify.create({
+        type: 'error',
+        caption: data.message
+      });
     } else if (data && data.length) {
-      data.forEach(err => Notify.create(err.msg || err));
+      data.forEach(err => Notify.create({
+        type: 'error',
+        caption: err.message || err
+      }));
     } else {
-      Notify.create(error.message || error);
+      Notify.create({
+        type: 'error',
+        caption: error.message || error
+      });
     }
+
     return Promise.reject(error);
   }
 }

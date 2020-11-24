@@ -54,12 +54,13 @@ export default {
   },
   async created () {
     await this.setKeys();
-    await this.setWallets('Oleh');
+    await this.setWallets();
+    await this.setOrders();
     await ws.start();
   },
   methods: {
     ...mapAuthActions(['logout']),
-    ...mapKeysActions(['setKeys', 'setWallets']),
+    ...mapKeysActions(['setKeys', 'setWallets', 'setOrders']),
     logoutApp () {
       this.logout();
       ws.close();

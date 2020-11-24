@@ -16,6 +16,12 @@ export default {
       ws.start();
       // verifyTokens();
     }
+  },
+  mounted () {
+    if (getAccessToken()) {
+      ws.start();
+      // verifyTokens();
+    }
   }
 };
 </script>

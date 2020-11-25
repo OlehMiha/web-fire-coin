@@ -45,26 +45,27 @@ export default {
               block: wallet[4],
               text: wallet[5]
             });
+            state.users = {...state.users};
           }
         }
-        console.log(state.users);
       });
     },
     [SET_ORDERS]: (state, {name, orders}) => {
       state.orders = orders;
       orders.forEach(order => {
-        if (state.users[name] && !state.users[name].orders) {
-          state.users[name].orders = [];
+        if (state.users && !state.users.orders || state.users.orders.find(i => i.name === name)) {
+          state.users.orders = [];
         }
-        state.users[name].orders.push({
+        state.users.orders.push({
+          name,
           symbol: order[3].slice(1),
           amount: order[6],
           type: order[8],
           status: order[13],
           price: order[16]
         });
+        state.users = {...state.users};
       });
-      console.log(state.users);
     }
   },
   actions: {

@@ -119,7 +119,7 @@
     border-radius 3px
 
     .q-table__middle
-        max-height calc(100vh - 140px) !important
+        max-height calc(100vh - 125px) !important
 
     .q-table__top,
     .q-table__bottom,

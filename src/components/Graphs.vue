@@ -1,6 +1,6 @@
 <template>
   <div class="all-graphs">
-    <div class="row wrap items-stretch" :class="`graph-${numberCharts}`" style="height: calc(100vh - 64px)">
+    <div class="row wrap items-stretch" :class="`graph-${numberCharts}`" style="height: calc(100% - 64px)">
       <div class="graph col q-pr-xs q-pb-xs">
         <div class="header_graph q-py-xs q-px-md">
           <div class="row justify-between items-center">

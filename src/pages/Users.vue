@@ -8,7 +8,8 @@
           :columns="columns"
           :pagination= "pagination"
           :filter="filter"
-          row-key="index"
+          :expanded.sync="expanded"
+          row-key="name"
           class="my-sticky-header-table"
           hide-bottom
           flat
@@ -43,16 +44,25 @@
               {{col.label}}
             </q-th>
           </q-tr>
-          <tr v-if="!props.row.pattern" slot="body" slot-scope="props" :props="props" class="row-table">
-            <td key="name" :props="props" >{{props.row.name}}</td>
-            <td key="key" :props="props" >{{props.row.key}}</td>
-            <td key="secretKey" :props="props" >{{props.row.secretKey.slice(0,7) + "..."}}</td>
+          <template v-slot:body="props">
+            <tr :props="props" class="row-table" :key="`m_${props.row.name}`">
+              <q-td v-if="users[props.row.name].wallets" auto-width>
+                <q-toggle v-model="props.expand" />
+              </q-td>
+              <td key="name" :props="props" >{{props.row.name}}</td>
+              <td key="key" :props="props" >{{props.row.key}}</td>
+              <td key="secretKey" :props="props" >{{props.row.secretKey.slice(0,7) + "..."}}</td>
 
-            <td key="active" :props="props" class="text-center" width="60px">
-              <q-btn color="negative" @click="deleteRow(props.row)" ><q-icon name="delete_forever"/></q-btn>
-            </td>
-
-          </tr>
+              <td key="active" :props="props" class="text-center" width="60px">
+                <q-btn color="negative" @click="deleteRow(props.row)" ><q-icon name="delete_forever"/></q-btn>
+              </td>
+            </tr>
+            <q-tr v-if="users[props.row.name].wallets" v-show="props.expand" :props="props" :key="`e_${props.row.name}`">
+              <q-td colspan="100%">
+                <table-balance :name="props.row.name"/>
+              </q-td>
+            </q-tr>
+          </template>
         </q-table>
       </div>
     </template>
@@ -88,8 +98,13 @@
 import {createNamespacedHelpers} from 'vuex';
 const {mapActions, mapState} = createNamespacedHelpers('users');
 
+import TableBalance from '../components/TableBalance';
+
 export default {
   name: 'page-user',
+  components: {
+    TableBalance
+  },
   data () {
     return {
       loading: false,
@@ -97,6 +112,7 @@ export default {
       name: '',
       key: '',
       secretKey: '',
+      expanded: [],
       columns: [
         {
           name: 'name',
@@ -132,14 +148,17 @@ export default {
       }
     };
   },
-  computed: mapState(['keys']),
+  computed: mapState(['keys', 'users']),
   async created () {
     this.loading = true;
     await this.setKeys();
+    await this.setWallets();
+    await this.setOrders();
+    this.expanded = this.keys.map(r => r.name);
     this.loading = false;
   },
   methods: {
-    ...mapActions(['setKeys', 'deleteKeys', 'addKey']),
+    ...mapActions(['setKeys', 'setWallets', 'setOrders', 'deleteKeys', 'addKey']),
     async addKeyInTable () {
       if (this.name && this.key && this.secretKey) {
         this.loading = true;

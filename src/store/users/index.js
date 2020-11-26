@@ -33,11 +33,11 @@ export default {
     [DELETE_KEY]: (state, id) => state.keys = state.keys.filter(item => item['_id'] !== id),
     [SET_WALLETS]: (state, {name, wallets}) => {
       wallets.orders = wallets;
+      if (state.users[name] && !state.users[name].wallets) {
+        state.users[name].wallets = [];
+      }
       wallets.forEach(wallet => {
         if (wallet[0] === 'exchange') {
-          if (state.users[name] && !state.users[name].wallets) {
-            state.users[name].wallets = [];
-          }
           if (Number(wallet[2]) >= 0.000001) {
             state.users[name].wallets.push({
               symbol: wallet[1],
@@ -52,10 +52,10 @@ export default {
     },
     [SET_ORDERS]: (state, {name, orders}) => {
       state.orders = orders;
+      if (state.users && !state.users.orders || state.users.orders.find(i => i.name === name)) {
+        state.users.orders = [];
+      }
       orders.forEach(order => {
-        if (state.users && !state.users.orders || state.users.orders.find(i => i.name === name)) {
-          state.users.orders = [];
-        }
         state.users.orders.push({
           name,
           symbol: order[3].slice(1),

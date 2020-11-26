@@ -46,8 +46,9 @@
           </q-tr>
           <template v-slot:body="props">
             <tr :props="props" class="row-table" :key="`m_${props.row.name}`">
-              <q-td v-if="users[props.row.name].wallets" auto-width>
-                <q-toggle v-model="props.expand" />
+              <q-td key="balance" auto-width>
+                <q-toggle v-model="props.expand" v-if="users[props.row.name].wallets"/>
+                <span v-else><q-toggle :value="false" disable/></span>
               </q-td>
               <td key="name" :props="props" >{{props.row.name}}</td>
               <td key="key" :props="props" >{{props.row.key}}</td>
@@ -114,6 +115,13 @@ export default {
       secretKey: '',
       expanded: [],
       columns: [
+        {
+          name: 'balance',
+          label: 'Open balance',
+          field: 'balance',
+          align: 'left',
+          required: true
+        },
         {
           name: 'name',
           label: 'Name',
